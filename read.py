@@ -2,13 +2,16 @@ import datetime
 import time
 import math
 
-import onzo.device
 
-conn = onzo.device.Connection()
+import onzo.internal.connection
+import onzo.devices.clamp
+import onzo.devices.display
+
+conn = onzo.internal.connection.Connection()
 try:
     conn.connect()
-    disp = onzo.device.Display(conn)
-    clamp = onzo.device.Clamp(conn)
+    disp = onzo.devices.display.Display(conn)
+    clamp = onzo.devices.clamp.Clamp(conn)
 
     p_reactive = None
     counter = 0
