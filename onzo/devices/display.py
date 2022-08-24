@@ -1,41 +1,69 @@
+from enum import Enum
 from onzo.internal.enums import NetworkID
 from onzo.internal.device import Device
 
+class Registers(Enum):
+    DATE_MINUTE = 1
+    DATE_HOUR = 2
+    DATE_DAY = 3
+    DATE_MONTH = 4
+    DATE_YEAR = 5
+
+    # Temperature register (src: https://bruce33.github.io/onzo_dumper/docs/www.navitron.org.uk-forum-topic-12168.html#:~:text=(Temperature%20is%20register%206%20by%20the%20way).)
+    TEMPERATURE = 6
+
+    SYNCHED = 33
+    FIRMWARE_VERSION = 45
+    HARDWARE_VERSION = 46
+    CONFIGURED = 83
+
+    STANDING_CHARGE_LOW = 129
+    STANDING_CHARGE_HIGH = 130
+    # response: 1234 (12.34p)
+    STANDING_CHARGE = [STANDING_CHARGE_LOW, STANDING_CHARGE_HIGH]
+
+    UNIT_COST_LOW = 131
+    UNIT_COST_HIGH = 132
+    # response: 1234 (12.34p)
+    UNIT_COST = [UNIT_COST_LOW[0], UNIT_COST_HIGH]
+
+    ESTIMATED_ANNUAL_CONSUPTION_LOW = 133
+    ESTIMATED_ANNUAL_CONSUPTION_HIGH = 134
+    ESTIMATED_ANNUAL_CONSUPTION = [ESTIMATED_ANNUAL_CONSUPTION_LOW, ESTIMATED_ANNUAL_CONSUPTION_HIGH]
+
+    GRIDWATCH_WEEK_START = 176
+    GRIDWATCH_WEEK_STOP = 177
+
+    GRIDWATCH_WEEKEND_START = 178
+    GRIDWATCH_WEEKEND_STOP = 179
+
+    SERIAL_LOW = 185
+    SERIAL_HIGH = 186
+    SERIAL = [SERIAL_LOW, SERIAL_HIGH]
+
+    # 2 possible values (will make enums for later)
+    COUNTRY_CODE = 187
+
+    TEMPERATURE_OFFSET = 192
+    TEMPERATURE_GAIN = 193
+
+    TARGET_LOW = 222
+    TARGET_HIGH = 223
+    TARGET = [TARGET_LOW, TARGET_HIGH]
+
+    COST_0 = 224
+    COST_1 = 225
+    COST_2 = 226
+    COST_3 = 227
+
+    START_0 = 228
+    START_1 = 229
+    START_2 = 230
+    START_3 = 231
+
 class Display(Device):
     network_id = NetworkID.DISPLAY
-    registers = {
-         'min': [1],
-         'hour': [2],
-         'day': [3],
-         'month': [4],
-         'year': [5],
-         # BULK DATA LIVES HERE
-         'synched': [33],
-         'version': [45],
-         'hardware': [46],
-         'configured': [83],
-         'standingcharge': [129, 130],
-         'unitcost': [131, 132],
-         'EAC': [133, 134],
-         'gridweekstart': [176],
-         'gridweekstop': [177],
-         'gridweekendstart': [178],
-         'gridweekendstop': [179],
-         'serial': [185, 186],
-         'country': [187],
-         'temp-offset': [192],
-         'temp-gain': [193],
-         'target': [222, 223],
-         'cost0': [224],
-         'cost1': [225],
-         'cost2': [226],
-         'cost3': [227],
-         'start0': [228],
-         'start1': [229],
-         'start2': [230],
-         'start3': [231],
-    }
-
+    
     def set_spend_rates(self, standing_charge, rate):
         standing_charge = max(min(int(standing_charge * 10000 + 0.5), 65534), 0)
         rate = max(min(int(rate * 10000 + 0.5), 65534), 0)
