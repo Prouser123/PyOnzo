@@ -3,6 +3,7 @@ import random
 
 from onzo.internal.enums import NetworkID, RequestType, ResponseType, StreamType
 from onzo.internal.constants import REQUEST_HEADER_FORMAT
+from onzo.internal.register import Register
 
 class Device(object):
     network_id = None
@@ -38,17 +39,19 @@ class Device(object):
         if resp_type != req_type:
             raise Exception("response type ({}) does not match request type ({})".format(resp_type, req_type))
         return resp_payload
-
-    def get_register(self, register_id):
+    
+    def get_register(self, register: Register):
+        register_id = register.value
         if type(register_id) == int:
+            # Single-register value
             parser = lambda payload: struct.unpack('<H', payload)[0]
             return self._send_request(RequestType.GET_REGISTER, register_id,
                                       resp_parser=parser)
-        elif type(register_id) == str:
-            addrs = self.registers[register_id]
+        elif type(register_id) == list:
+            # Multi-register value.
             val = 0
-            for addr in addrs[::-1]:
-                val = (val << 16) + self.get_register(addr)
+            for addr in register_id:
+                val = (val << 16) + self.get_register(self.registers(addr))
             return val
 
     def set_register(self, register_id, value):

@@ -1,8 +1,9 @@
 from enum import Enum
 from onzo.internal.enums import NetworkID
 from onzo.internal.device import Device
+from onzo.internal.register import Register
 
-class Registers(Enum):
+class Registers(Register):
     TYPE = 0
     FIRMWARE_VERSION = 1
 
@@ -45,6 +46,7 @@ class Registers(Enum):
 
 
 class Clamp(Device):
+    registers = Registers
     network_id = NetworkID.CLAMP
 
     def get_cumulative_kwh(self):

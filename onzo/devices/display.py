@@ -1,8 +1,9 @@
 from enum import Enum
 from onzo.internal.enums import NetworkID
 from onzo.internal.device import Device
+from onzo.internal.register import Register
 
-class Registers(Enum):
+class Registers(Register):
     DATE_MINUTE = 1
     DATE_HOUR = 2
     DATE_DAY = 3
@@ -25,7 +26,7 @@ class Registers(Enum):
     UNIT_COST_LOW = 131
     UNIT_COST_HIGH = 132
     # response: 1234 (12.34p)
-    UNIT_COST = [UNIT_COST_LOW[0], UNIT_COST_HIGH]
+    UNIT_COST = [UNIT_COST_LOW, UNIT_COST_HIGH]
 
     ESTIMATED_ANNUAL_CONSUPTION_LOW = 133
     ESTIMATED_ANNUAL_CONSUPTION_HIGH = 134
@@ -62,6 +63,7 @@ class Registers(Enum):
     START_3 = 231
 
 class Display(Device):
+    registers = Registers
     network_id = NetworkID.DISPLAY
     
     def set_spend_rates(self, standing_charge, rate):
