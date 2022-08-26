@@ -35,16 +35,17 @@ class Entity:
             retain=True
         )
 
-        # Define a scheduled job to retrieve and publish sensor data
-        @scheduler.scheduled_job("interval", seconds=self._update_interval)
-        def publish():
-            self.__client.publish(
-                self.construct_onzo_mqtt_topic(self._entity_mqtt_name),
-                json.dumps(self.get()) # Serialize the dict to JSON
-            )
-        # Run the job now (to get data immediately)
-        publish()
-
+        # If an update interval was configured, setup a scheduled job.
+        if (self._update_interval):
+            # Define a scheduled job to retrieve and publish sensor data
+            @scheduler.scheduled_job("interval", seconds=self._update_interval)
+            def publish():
+                self.__client.publish(
+                    self.construct_onzo_mqtt_topic(self._entity_mqtt_name),
+                    json.dumps(self.get()) # Serialize the dict to JSON
+                )
+            # Run the job now (to get data immediately)
+            publish()
 
     def construct_hass_mqtt_topic(self, suffix: str):
         return f"testing2/homeassistant/sensor/onzo_{self._device_type}/{suffix}"
