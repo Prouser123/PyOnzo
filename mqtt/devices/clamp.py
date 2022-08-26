@@ -6,6 +6,7 @@ import json
 
 class ClampDevice:
     def __init__(self, clamp: Clamp, dispDevice: DisplayDevice):
+        self._clamp = clamp
         self.connections = [["onzo-rf", dispDevice.identifiers[0]]]
         self.identifiers = [f"onzo_clamp_{clamp.get_serial()}"]
         self.manufacturer = "Onzo"

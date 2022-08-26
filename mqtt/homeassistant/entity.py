@@ -2,13 +2,14 @@ import json
 
 from paho.mqtt.client import Client
 from apscheduler.schedulers.background import BackgroundScheduler
+from mqtt.devices.clamp import ClampDevice
 
 from mqtt.devices.display import DisplayDevice
 from onzo.internal.device import Device
 
 class Entity:
     # Filter these types when we serialize our entity classes
-    __filter_types = (Client, DisplayDevice, Device)
+    __filter_types = (Client, DisplayDevice, ClampDevice, Device)
     
 
     _device_type: str = "unknown"
