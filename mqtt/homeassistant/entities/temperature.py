@@ -8,14 +8,14 @@ class TemperatureEntity(DisplayEntity):
     _entity_mqtt_name = "temperature"
 
     def __init__(self, client: Client, display: DisplayDevice):
-        super().__init__(client, display)
-
         self.device_class = "temperature"
         self.name = "onzo.display.temperature"
         self.unique_id = f"{display.identifiers[0]}_temperature"
         self.state_topic = self.construct_onzo_mqtt_topic("temperature")
         self.value_template = "{{ value_json['state'] }}"
-        print(self.serialize())
+
+        # Call init after we define the data we want to be serialized / published in Entity init
+        super().__init__(client, display)
     
     def get(self):
         return {

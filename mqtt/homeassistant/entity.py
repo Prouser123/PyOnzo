@@ -24,14 +24,15 @@ class Entity:
     def __init__(self, client: Client):
         self.__client = client
 
+        # Child classes' inits have already set the variables they want to serialize.
+        # Now we can publish the homeassistant config topic!
+
         # Publish entity information to home assistant.
-        #self.__client.publish(
-        #    self.construct_hass_mqtt_topic(f"{self.__entity_mqtt_name}/config"),
-        #    self.serialize(),
-        #    retain=True
-        #)
-        print(self.construct_hass_mqtt_topic(f"{self._entity_mqtt_name}/config"))
-        #print(self.serialize())
+        self.__client.publish(
+            self.construct_hass_mqtt_topic(f"{self._entity_mqtt_name}/config"),
+            self.serialize(),
+            retain=True
+        )
 
 
     def construct_hass_mqtt_topic(self, suffix: str):
