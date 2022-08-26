@@ -1,10 +1,8 @@
-from sre_constants import NOT_LITERAL
 from paho.mqtt.client import Client
 
 import json
 
 from mqtt.devices.display import DisplayDevice
-from onzo.devices.display import Display
 from onzo.internal.device import Device
 
 class Entity:
