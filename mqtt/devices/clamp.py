@@ -1,10 +1,8 @@
+from mqtt.devices.base import MQTTDevice
 from mqtt.devices.display import DisplayDevice
-from onzo.internal.connection import Connection
 from onzo.devices.clamp import Clamp
 
-import json
-
-class ClampDevice:
+class ClampDevice(MQTTDevice):
     def __init__(self, clamp: Clamp, dispDevice: DisplayDevice):
         self._clamp = clamp
         self.connections = [["onzo-rf", dispDevice.identifiers[0]]]
@@ -14,6 +12,3 @@ class ClampDevice:
         self.name = "onzo.clamp"
         self.sw_version = str(clamp.get_firmware_version())
         self.via_device = dispDevice.identifiers[0]
-    
-    def get_json(self):
-        return json.dumps(self.__dict__)

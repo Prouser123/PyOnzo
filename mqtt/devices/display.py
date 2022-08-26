@@ -1,10 +1,7 @@
-from onzo.internal.connection import Connection
-from onzo.devices.clamp import Clamp
+from mqtt.devices.base import MQTTDevice
 from onzo.devices.display import Display
 
-import json
-
-class DisplayDevice:
+class DisplayDevice(MQTTDevice):
     def __init__(self, display: Display):
         self._display = display
         self.connections = [["usb-hid", "onzo0"]]
@@ -13,6 +10,3 @@ class DisplayDevice:
         self.model = f"Smart Energy Kit - Display (v{self._display.get_hardware_version()})"
         self.name = "onzo.display"
         self.sw_version = str(self._display.get_firmware_version())
-    
-    def get_json(self):
-        return json.dumps(self.__dict__)
