@@ -6,12 +6,13 @@ import json
 
 class DisplayDevice:
     def __init__(self, display: Display):
+        self.__display = display
         self.connections = [["usb-hid", "onzo0"]]
-        self.identifiers = [f"onzo_display-v{display.get_hardware_version()}_{display.get_serial()}"]
+        self.identifiers = [f"onzo_display-v{self.__display.get_hardware_version()}_{self.__display.get_serial()}"]
         self.manufacturer = "Onzo"
-        self.model = f"Smart Energy Kit - Display (v{display.get_hardware_version()})"
+        self.model = f"Smart Energy Kit - Display (v{self.__display.get_hardware_version()})"
         self.name = "onzo.display"
-        self.sw_version = str(display.get_firmware_version())
+        self.sw_version = str(self.__display.get_firmware_version())
     
     def get_json(self):
         return json.dumps(self.__dict__)

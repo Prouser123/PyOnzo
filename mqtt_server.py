@@ -3,7 +3,7 @@ import os
 import paho.mqtt.client as mqtt
 from mqtt.devices.clamp import ClampDevice
 from mqtt.devices.display import DisplayDevice
-from mqtt.entities.display.temperature import TemperatureEntity
+from mqtt.homeassistant.entities.temperature import TemperatureEntity
 
 from onzo.internal.connection import Connection
 from onzo.devices.clamp import Clamp
@@ -32,10 +32,10 @@ try:
     display_device = DisplayDevice(display)
     clamp_device = ClampDevice(clamp, display_device)
 
-    temp_entity = TemperatureEntity(display_device)
+    temp_entity = TemperatureEntity(client, display_device)
 
-    client.publish("homeassistant/sensor/onzo_display/temperature/config", temp_entity.get_json(), retain=True)
-    client.publish("onzo/display/temperature", display.get_register(display.registers.TEMPERATURE))
+    #client.publish("testing/homeassistant/sensor/onzo_display/temperature/config", temp_entity.get_json(), retain=True)
+    #client.publish("testing/onzo/display/temperature", display.get_register(display.registers.TEMPERATURE))
 
 
 finally:
