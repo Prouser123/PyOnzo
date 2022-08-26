@@ -1,4 +1,5 @@
 from enum import Enum
+from onzo.internal.connection import Connection
 from onzo.internal.enums import NetworkID
 from onzo.internal.device import Device
 from onzo.internal.register import Register
@@ -49,6 +50,26 @@ class Clamp(Device):
     registers = Registers
     network_id = NetworkID.CLAMP
 
+    # Static variables (reg. values will never change)
+    __firmware_version: str
+    __serial: str
+
+    def __init__(self, connection: Connection):
+        super().__init__(connection)
+
+        self.__firmware_version = self.get_register(self.registers.FIRMWARE_VERSION)
+        self.__serial = self.get_register(self.registers.SERIAL)
+
+    #region Static variable getters
+    def get_firmware_version(self):
+        return self.__firmware_version
+    
+    def get_serial(self):
+        return self.__serial
+    #endregion
+
+"""     
     def get_cumulative_kwh(self):
         EAR = self.get_EAR()
-        return EAR/10000
+        return EAR/10000 
+"""

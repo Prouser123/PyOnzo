@@ -1,4 +1,5 @@
 from enum import Enum
+from onzo.internal.connection import Connection
 from onzo.internal.enums import NetworkID
 from onzo.internal.device import Device
 from onzo.internal.register import Register
@@ -65,8 +66,31 @@ class Registers(Register):
 class Display(Device):
     registers = Registers
     network_id = NetworkID.DISPLAY
+
+    # Static variables (reg. values will never change)
+    __firmware_version: str
+    __hardware_version: str
+    __serial: str
+
+    def __init__(self, connection: Connection):
+        super().__init__(connection)
+
+        self.__firmware_version = self.get_register(self.registers.FIRMWARE_VERSION)
+        self.__hardware_version = self.get_register(self.registers.HARDWARE_VERSION)
+        self.__serial = self.get_register(self.registers.SERIAL)
+
+    #region Static variable getters
+    def get_firmware_version(self):
+        return self.__firmware_version
     
-    def set_spend_rates(self, standing_charge, rate):
+    def get_hardware_version(self):
+        return self.__hardware_version
+    
+    def get_serial(self):
+        return self.__serial
+    #endregion
+
+"""     def set_spend_rates(self, standing_charge, rate):
         standing_charge = max(min(int(standing_charge * 10000 + 0.5), 65534), 0)
         rate = max(min(int(rate * 10000 + 0.5), 65534), 0)
         return [
@@ -98,3 +122,4 @@ class Display(Device):
         eac_hi = self.get_register(self.registers["EAC"][1])
         eac_value = (eac_hi << 16 + eac_lo)
         return eac_value
+ """
