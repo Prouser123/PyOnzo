@@ -19,5 +19,5 @@ class TemperatureEntity(DisplayEntity):
     
     def get(self):
         return {
-            "state": self.__display_device.__display.get_register(self.__display_device.__display.registers.TEMPERATURE)
+            "state": self._display_device._display.get_register(self._display_device._display.registers.TEMPERATURE)
         }
