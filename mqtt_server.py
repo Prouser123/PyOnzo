@@ -5,7 +5,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from mqtt.devices.clamp import ClampDevice
 from mqtt.devices.display import DisplayDevice
-from mqtt.homeassistant.entities.temperature import TemperatureEntity
+from mqtt.homeassistant.entities.display.temperature import TemperatureEntity
 
 from onzo.internal.connection import Connection
 from onzo.devices.clamp import Clamp
