@@ -8,6 +8,9 @@ from onzo.devices.display import Display
 from onzo.internal.device import Device
 
 class Entity:
+    # Filter these types when we serialize our entity classes
+    __filter_types = (Client, DisplayDevice, Device)
+    
 
     _device_type: str = "unknown"
     _entity_mqtt_name: str = "unknown"
@@ -40,17 +43,21 @@ class Entity:
         return f"testing2/onzo/{self._device_type}/{suffix}"
 
     def serialize(self):
-        # Unfortunately json.dumps() includes values that are "null", so we need to remove these next!
-        data = json.dumps(self.__dict__, default=self.__serialize_handler)
-        return data
+        return json.dumps(self.__serialize_filter_dict(self.__dict__))
 
-
-    def __serialize_handler(self, obj):
-        if isinstance(obj, (Client, DisplayDevice, Device)):
-            # Return none as these are unserializable 
-            return None
-        else:
-            return obj.value
+    # Based on https://stackoverflow.com/a/66127889
+    def __serialize_filter_dict(self, _dict):
+        """Delete values of a certain type recursively from all of the dictionaries"""
+        for key, value in list(_dict.items()):
+            if isinstance(value, dict):
+                self.__serialize_filter_dict(value)
+            elif isinstance(value, self.__filter_types):
+                del _dict[key]
+            elif isinstance(value, list):
+                for v_i in value:
+                    if isinstance(v_i, dict):
+                        self.__serialize_filter_dict(v_i)
+        return _dict
     
     def get(self) -> dict:
         raise NotImplementedError("Implemented in subclass.")
