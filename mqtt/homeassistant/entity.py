@@ -42,20 +42,35 @@ class Entity:
         return f"testing2/onzo/{self._device_type}/{suffix}"
 
     def serialize(self):
-        return json.dumps(self.__serialize_filter_dict(self.__dict__))
+        # The serialize handler returns None for any objects we don't want serialized.
+        # Unfortunately, json.dumps includes Non values in it's response.
+        data = json.dumps(self.__dict__, default=self.__serialize_handler)
+        # To fix this, we will load the data (creating a copy), filter it, and export it again.
+        # We cannot simply deep copy self.__dict__ itself as some objects in it cannot be picked, resulting in a TypeError.
+        data = json.dumps(self.__dict_filter_remove_none(json.loads(data)))
+        # Return the filtered and re-dumped data.
+        return data
+    
+    def __serialize_handler(self, obj):
+        if isinstance(obj, self.__filter_types):
+            # Return none as these are unserializable
+            # Unfortunately json.dumps will still show these
+            return None
+        else:
+            return obj.value
 
     # Based on https://stackoverflow.com/a/66127889
-    def __serialize_filter_dict(self, _dict):
-        """Delete values of a certain type recursively from all of the dictionaries"""
+    def __dict_filter_remove_none(self, _dict):
+        """Delete values that are "None" recursively from all of the dictionaries"""
         for key, value in list(_dict.items()):
             if isinstance(value, dict):
-                self.__serialize_filter_dict(value)
-            elif isinstance(value, self.__filter_types):
+                self.__dict_filter_remove_none(value)
+            elif value is None:
                 del _dict[key]
             elif isinstance(value, list):
                 for v_i in value:
                     if isinstance(v_i, dict):
-                        self.__serialize_filter_dict(v_i)
+                        self.__dict_filter_remove_none(v_i)
         return _dict
     
     def get(self) -> dict:
