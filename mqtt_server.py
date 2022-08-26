@@ -6,8 +6,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from mqtt.devices.clamp import ClampDevice
 from mqtt.devices.display import DisplayDevice
 
-from mqtt.homeassistant.entities.display.temperature import TemperatureEntity
-from mqtt.homeassistant.entities.clamp.voltage import BatteryVoltageEntity
+from mqtt.homeassistant.entities.entity_loader import EntityLoader
 
 from onzo.internal.connection import Connection
 from onzo.devices.clamp import Clamp
@@ -42,9 +41,8 @@ try:
     display_device = DisplayDevice(display)
     clamp_device = ClampDevice(clamp, display_device)
 
-    # Create instances of each entity we wish to report
-    TemperatureEntity(client, scheduler, display_device)
-    BatteryVoltageEntity(client, scheduler, clamp_device)
+    # Dynamically load entities.
+    EntityLoader(client, scheduler, display_device, clamp_device).load()
 
     # Create an infinite loop
     while True:
