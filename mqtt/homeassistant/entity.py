@@ -48,10 +48,10 @@ class Entity:
             publish()
 
     def construct_hass_mqtt_topic(self, suffix: str):
-        return f"testing2/homeassistant/sensor/onzo_{self._device_type}/{suffix}"
+        return f"homeassistant/sensor/onzo_{self._device_type}/{suffix}"
 
     def construct_onzo_mqtt_topic(self, suffix: str):
-        return f"testing2/onzo/{self._device_type}/{suffix}"
+        return f"onzo/{self._device_type}/{suffix}"
 
     def serialize(self):
         # The serialize handler returns None for any objects we don't want serialized.
