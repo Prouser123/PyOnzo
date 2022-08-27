@@ -5,7 +5,7 @@ from mqtt.devices.clamp import ClampDevice
 from mqtt.homeassistant.clamp_entity import ClampEntity
 
 class BatteryVoltageEntity(ClampEntity):
-    _update_interval = 300
+    _update_interval = 600 # Update every 10 minutes
     _entity_mqtt_name = "battery_voltage"
 
     def __init__(self, client: Client, scheduler: BackgroundScheduler, clamp: ClampDevice):
