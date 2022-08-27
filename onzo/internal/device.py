@@ -50,7 +50,7 @@ class Device(object):
         elif type(register_id) == list:
             # Multi-register value.
             val = 0
-            for addr in register_id:
+            for addr in register_id[::-1]:
                 val = (val << 16) + self.get_register(self.registers(addr))
             return val
 
