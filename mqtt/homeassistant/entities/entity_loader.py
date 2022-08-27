@@ -1,5 +1,5 @@
 from importlib import import_module
-from os.path import dirname, basename, isfile, join
+from os.path import dirname, basename, isfile
 import glob
 
 
@@ -21,24 +21,28 @@ class EntityLoader:
         self.load_clamp_entities()
 
     def load_clamp_entities(self):
-        module, classes = self.__get_entities_in_folder("clamp")
+        entities = self.__get_entities_in_folder("clamp")
 
-        for c in classes:
-            print(f"[EntityLoader.load.clamp] Instantiating class '{c}'")
-            getattr(module, c)(self.__client, self.__scheduler, self.__clamp_device)
+        for entity in entities:
+            for c in entity["classes"]:
+                print(f"[EntityLoader.load.clamp] Instantiating class '{c}'")
+                getattr(entity["module"], c)(self.__client, self.__scheduler, self.__clamp_device)
 
     def load_display_entities(self):
-        module, classes = self.__get_entities_in_folder("display")
-        
-        for c in classes:
-            print(f"[EntityLoader.load.display] Instantiating class '{c}'")
-            getattr(module, c)(self.__client, self.__scheduler, self.__display_device)
+        entities = self.__get_entities_in_folder("display")
+
+        for entity in entities:
+            for c in entity["classes"]:
+                print(f"[EntityLoader.load.display] Instantiating class '{c}'")
+                getattr(entity["module"], c)(self.__client, self.__scheduler, self.__display_device)
 
     def __get_entities_in_folder(self, folder):
         # 1. Find .py files in folder
         # (src: https://stackoverflow.com/a/1057534)
         modules = glob.glob(f"{dirname(__file__)}/{folder}/*.py")
         __all__ = [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
+
+        entities = []
         
         # 2. Import the modules (.py files)
         for m in __all__:
@@ -53,4 +57,7 @@ class EntityLoader:
             print(f"[EntityLoader.import] Found classes: {', '.join(classes)}")
             # Found classes: Class1, Class2
 
-            return module, classes
+            # For each class we find, add it (and it's module) to the entities list
+            entities.append({"module": module, "classes": classes})
+
+        return entities
